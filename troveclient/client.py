@@ -205,6 +205,9 @@ class HTTPClient(object):
     def get(self, url, **kwargs):
         return self._cs_request(url, 'GET', **kwargs)
 
+    def patch(self, url, **kwargs):
+        return self._cs_request(url, 'PATCH', **kwargs)
+
     def post(self, url, **kwargs):
         return self._cs_request(url, 'POST', **kwargs)
 

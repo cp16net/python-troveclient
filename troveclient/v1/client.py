@@ -16,6 +16,8 @@ from troveclient.v1.management import MgmtFlavors
 from troveclient.v1.accounts import Accounts
 from troveclient.v1.diagnostics import DiagnosticsInterrogator
 from troveclient.v1.diagnostics import HwInfoInterrogator
+from troveclient.v1.configurations import Configurations
+from troveclient.v1.configurations import ConfigurationParameters
 
 
 class Client(object):
@@ -53,6 +55,8 @@ class Client(object):
         self.root = Root(self)
         self.security_group_rules = SecurityGroupRules(self)
         self.security_groups = SecurityGroups(self)
+        self.configurations = Configurations(self)
+        self.configurations_parameters = ConfigurationParameters(self)
 
         #self.hosts = Hosts(self)
         #self.quota = Quotas(self)

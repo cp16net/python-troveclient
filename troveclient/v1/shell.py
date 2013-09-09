@@ -99,6 +99,8 @@ def do_show(cs, args):
     instance._info['flavor'] = instance.flavor['id']
     if hasattr(instance, 'volume'):
         instance._info['volume'] = instance.volume['size']
+    if hasattr(instance, 'configuration'):
+        instance._info['configuration'] = instance.configuration['id']
 
     _print_instance(instance)
 
@@ -136,6 +138,10 @@ def do_delete(cs, args):
            metavar='<availability_zone>',
            default=None,
            help='The Zone hint to give to nova')
+@utils.arg('--configuration',
+           metavar='<configuration>',
+           default=None,
+           help='The configuration id to apply to the instance')
 @utils.service_type('database')
 def do_create(cs, args):
     """Creates a new instance."""
@@ -154,11 +160,14 @@ def do_create(cs, args):
                                    databases=databases,
                                    users=users,
                                    restorePoint=restore_point,
-                                   availability_zone=args.availability_zone)
+                                   availability_zone=args.availability_zone,
+                                   configuration_ref=args.configuration)
     instance._info['flavor'] = instance.flavor['id']
     if hasattr(instance, 'volume'):
         instance._info['volume'] = instance.volume['size']
     del(instance._info['links'])
+    if hasattr(instance, 'configuration'):
+        instance._info['configuration'] = instance.configuration['id']
 
     _print_instance(instance)
 
@@ -199,6 +208,24 @@ def do_resize_volume(cs, args):
 def do_restart(cs, args):
     """Restarts the instance."""
     cs.instances.restart(args.instance)
+
+
+@utils.arg('instance',
+           metavar='<instance>',
+           type=str,
+           help='UUID of the instance')
+@utils.arg('--name',
+           metavar='<name>',
+           default=None,
+           help='Name to assign to the instance')
+@utils.arg('--configuration',
+           metavar='<configuration>',
+           default=None,
+           help='Configuration to assign to the instance')
+@utils.service_type('database')
+def do_modify(cs, args):
+    """Modifies the instance"""
+    cs.instances.modify(args.instance, args.name, args.configuration)
 
 
 # Backup related commands
@@ -489,3 +516,88 @@ def do_secgroup_add_rule(cs, args):
 def do_secgroup_delete_rule(cs, args):
     """Deletes a security group rule."""
     cs.security_group_rules.delete(args.security_group_rule)
+
+
+# configuration group related functions
+
+@utils.service_type('database')
+def do_configuration_list(cs, args):
+    """Lists all configuration groups."""
+    config_grps = cs.configurations.list()
+    utils.print_list(config_grps, ['id', 'name', 'description'])
+
+
+@utils.arg('configuration_group', metavar='<configuration_group>',
+           help='ID of the Configuration Group.')
+@utils.service_type('database')
+def do_configuration_show(cs, args):
+    """Shows details of a configuration group."""
+    config_grp = cs.configurations.get(args.configuration_group)
+    _print_instance(config_grp)
+
+
+@utils.arg('name', metavar='<name>', help='Name of the Configuration Group.')
+@utils.arg('values', metavar='<values>',
+           help='Dictionary of the values to set.')
+@utils.arg('--description', metavar='<description>',
+           default=None,
+           help='An optional description for the configuration Group.')
+@utils.service_type('database')
+def do_configuration_create(cs, args):
+    """Creates a configuration group."""
+    config_grp = cs.configurations.create(args.name, args.values,
+                                          description=args.description)
+    _print_instance(config_grp)
+
+
+@utils.arg('configuration_group', metavar='<configuration_group>',
+           help='ID of the Configuration Group.')
+@utils.arg('values', metavar='<values>',
+           help='Dictionary of the values to set.')
+@utils.arg('--name', metavar='<name>', default=None,
+           help='Name of the Configuration Group.')
+@utils.arg('--description', metavar='<description>',
+           default=None,
+           help='An optional description for the configuration Group.')
+@utils.service_type('database')
+def do_configuration_update(cs, args):
+    """Updates the details of a configuration group."""
+    cs.configurations.update(args.configuration_group,
+                             args.values,
+                             args.name,
+                             args.description)
+
+
+@utils.arg('configuration_group', metavar='<configuration_group>',
+           help='ID of the Configuration Group.')
+@utils.arg('values', metavar='<values>',
+           help='Dictionary of the values to set.')
+@utils.service_type('database')
+def do_configuration_edit(cs, args):
+    """Upsert the details of a configuration group."""
+    cs.configurations.edit(args.configuration_group,
+                           args.values)
+
+
+@utils.arg('configuration_group', metavar='<configuration_group>',
+           help='ID of the Configuration Group.')
+@utils.service_type('database')
+def do_configuration_instance_list(cs, args):
+    """Shows details of a configuration group."""
+    params = cs.configurations.instances(args.configuration_group)
+    utils.print_list(params, ['id', 'name'])
+
+
+@utils.arg('configuration_group', metavar='<configuration_group>',
+           help='ID of the Configuration Group.')
+@utils.service_type('database')
+def do_configuration_delete(cs, args):
+    """Delete the configuration group."""
+    cs.configurations.delete(args.configuration_group)
+
+
+@utils.service_type('database')
+def do_configuration_list_parameters(cs, args):
+    """Shows details of a configuration group."""
+    params = cs.configurations_parameters.parameters()
+    utils.print_list(params, ['name', 'type', 'min', 'max', 'dynamic'])
