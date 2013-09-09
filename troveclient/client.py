@@ -309,6 +309,7 @@ class Dbaas(object):
         from troveclient.hosts import Hosts
         from troveclient.quota import Quotas
         from troveclient.backups import Backups
+        from troveclient.configurations import Configurations
         from troveclient.security_groups import SecurityGroups
         from troveclient.security_groups import SecurityGroupRules
         from troveclient.storage import StorageInfo
@@ -335,6 +336,7 @@ class Dbaas(object):
         self.hosts = Hosts(self)
         self.quota = Quotas(self)
         self.backups = Backups(self)
+        self.configurations = Configurations(self)
         self.security_groups = SecurityGroups(self)
         self.security_group_rules = SecurityGroupRules(self)
         self.storage = StorageInfo(self)
