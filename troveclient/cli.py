@@ -323,6 +323,36 @@ class SecurityGroupCommands(common.AuthedCommandsBase):
         self._require('id')
         self.dbaas.security_group_rules.delete(self.id)
 
+class ScheduledTaskCommands(common.AuthedCommandsBase):
+    """ Commands to list and show Scheduled Task for an instance. """
+
+    params = ['id',
+              'scheduledtask_id',
+              'name',
+              'type',
+              'enabled',
+              'description',
+             ]
+
+    def list(self):
+        """ List all the Scheduled Tasks of an instance. """
+        self._require('id')
+        self._pretty_print(self.dbaas.scheduled_tasks.list, self.id)
+
+    def get(self):
+        """ Get a Scheduled Task of an instance. """
+        self._require('id')
+        self._require('scheduledtask_id')
+        self._pretty_print(self.dbaas.scheduled_tasks.get, self.id,
+                           self.scheduledtask_id)
+
+    def create(self):
+        """ Create a new Scheduled Task on an instance. """
+        self._require('id', 'name')
+        self._pretty_print(self.dbaas.scheduled_tasks.create, self.id,
+                           self.name, self.type, self.enabled,
+                           self.description)
+
 
 COMMANDS = {
     'auth': common.Auth,
@@ -335,6 +365,7 @@ COMMANDS = {
     'root': RootCommands,
     'version': VersionCommands,
     'secgroup': SecurityGroupCommands,
+    'scheduled_task': ScheduledTaskCommands,
 }
 
 

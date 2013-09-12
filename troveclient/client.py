@@ -310,6 +310,7 @@ class Dbaas(object):
         from troveclient.quota import Quotas
         from troveclient.backups import Backups
         from troveclient.security_groups import SecurityGroups
+        from troveclient.scheduled_tasks import ScheduledTasks
         from troveclient.security_groups import SecurityGroupRules
         from troveclient.storage import StorageInfo
         from troveclient.management import Management
@@ -335,6 +336,7 @@ class Dbaas(object):
         self.quota = Quotas(self)
         self.backups = Backups(self)
         self.security_groups = SecurityGroups(self)
+        self.scheduled_tasks = ScheduledTasks(self)
         self.security_group_rules = SecurityGroupRules(self)
         self.storage = StorageInfo(self)
         self.management = Management(self)
