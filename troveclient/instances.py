@@ -76,7 +76,7 @@ class Instances(base.ManagerWithFind):
         if availability_zone:
             body["instance"]["availability_zone"] = availability_zone
         if configuration_ref:
-            body["instance"]["configurationRef"] = configuration_ref
+            body["instance"]["configuration_ref"] = configuration_ref
 
         return self._create("/instances", body, "instance")
 
@@ -87,7 +87,7 @@ class Instances(base.ManagerWithFind):
             }
         }
         if configuration_ref is not None:
-            body["instance"]["configurationRef"] = configuration_ref
+            body["instance"]["configuration_ref"] = configuration_ref
         url = "/instances/%s" % instance_id
         resp, body = self.api.client.put(url, body=body)
         check_for_exceptions(resp, body)
