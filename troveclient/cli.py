@@ -130,6 +130,11 @@ class InstanceCommands(common.AuthedCommandsBase):
         self._require('id')
         self._pretty_print(self.dbaas.instances.restart, self.id)
 
+    def configuration(self):
+        """Get configuration for the specified instance"""
+        self._require('id')
+        self._pretty_print(self.dbaas.instances.configuration, self.id)
+
 
 class FlavorsCommands(common.AuthedCommandsBase):
     """Commands for listing Flavors"""
@@ -413,7 +418,7 @@ COMMANDS = {
     'database': DatabaseCommands,
     'limit': LimitsCommands,
     'backup': BackupsCommands,
-    'configurations': ConfigurationsCommands,
+    'configuration': ConfigurationsCommands,
     'user': UserCommands,
     'root': RootCommands,
     'version': VersionCommands,

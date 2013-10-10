@@ -179,6 +179,15 @@ class Instances(base.ManagerWithFind):
         body = {'restart': {}}
         self._action(instance_id, body)
 
+    def configuration(self, instance):
+        """
+        Get a configuration on instances.
+
+        :rtype: :class:`Instance`
+        """
+        return self._get("/instances/%s/configuration" % base.getid(instance),
+                         "instance")
+
 
 Instances.resize_flavor = Instances.resize_instance
 
