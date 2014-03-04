@@ -750,7 +750,7 @@ def do_configuration_parameter_list(cs, args):
         raise exceptions.NoUniqueMatch('The datastore name or id is required'
                                        ' to retrieve the parameters for the'
                                        ' configuration group by name.')
-    utils.print_list(params, ['name', 'type', 'min', 'max',
+    utils.print_list(params, ['name', 'type', 'min_size', 'max_size',
                               'restart_required'])
 
 
@@ -807,3 +807,77 @@ def do_configuration_update(cs, args):
                              args.values,
                              args.name,
                              args.description)
+
+
+@utils.arg('datastore_version',
+           metavar='<datastore_version>',
+           help='Datastore version name or UUID assigned to the '
+                'configuration group.')
+@utils.arg('name', metavar='<name>',
+           help='Name of the datastore conifguration parameter.')
+@utils.arg('restart_required', metavar='<restart_required>',
+           help='Sets the datastore conifguration parameter if it '
+                'requires a restart or not.')
+@utils.arg('data_type', metavar='<data_type>',
+           help='Data type of the datastore conifguration parameter.')
+@utils.arg('--max_size', metavar='<max_size>',
+           help='Maximum size of the datastore conifguration parameter.')
+@utils.arg('--min_size', metavar='<min_size>',
+           help='Minimum size of the datastore conifguration parameter.')
+@utils.service_type('database')
+def do_configuration_parameter_create(cs, args):
+    """Create datastore configuration parameter"""
+    cs.configuration_parameters.create(
+        args.datastore_version,
+        args.name,
+        args.restart_required,
+        args.data_type,
+        args.max_size,
+        args.min_size,
+    )
+
+
+@utils.arg('datastore_version',
+           metavar='<datastore_version>',
+           help='Datastore version name or UUID assigned to the '
+                'configuration group.')
+@utils.arg('id', metavar='<id>',
+           help='UUID of the datastore conifguration parameter.')
+@utils.arg('name', metavar='<name>',
+           help='Name of the datastore conifguration parameter.')
+@utils.arg('restart_required', metavar='<restart_required>',
+           help='Sets the datastore conifguration parameter if it '
+                'requires a restart or not.')
+@utils.arg('data_type', metavar='<data_type>',
+           help='Data type of the datastore conifguration parameter.')
+@utils.arg('--max_size', metavar='<max_size>',
+           help='Maximum size of the datastore conifguration parameter.')
+@utils.arg('--min_size', metavar='<min_size>',
+           help='Minimum size of the datastore conifguration parameter.')
+@utils.service_type('database')
+def do_configuration_parameter_modify(cs, args):
+    """Modify datastore configuration parameter"""
+    cs.configuration_parameters.modify(
+        args.id,
+        args.datastore_version,
+        args.name,
+        args.restart_required,
+        args.data_type,
+        args.max_size,
+        args.min_size,
+    )
+
+
+@utils.arg('datastore_version',
+           metavar='<datastore_version>',
+           help='Datastore version name or UUID assigned to the '
+                'configuration group.')
+@utils.arg('id', metavar='<id>',
+           help='UUID of the datastore conifguration parameter.')
+@utils.service_type('database')
+def do_configuration_parameter_delete(cs, args):
+    """Modify datastore configuration parameter"""
+    cs.configuration_parameters.delete(
+        args.id,
+        args.datastore_version,
+    )

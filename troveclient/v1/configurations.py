@@ -167,6 +167,51 @@ class ConfigurationParameters(base.ManagerWithFind):
         return self._get("/datastores/versions/%s/parameters/%s" %
                         (version, key))
 
+    def create(self, version, name, restart_required, data_type,
+               max_size, min_size):
+        body = {
+            "configuration-parameter": {
+                "name": name,
+                "restart_required": restart_required,
+                "data_type": data_type,
+                "max_size": max_size,
+                "min_size": min_size,
+            }
+        }
+        url = "/mgmt/datastores/versions/%s/parameters" % version
+        resp, body = self.api.client.post(url, body=body)
+        common.check_for_exceptions(resp, body, url)
+
+    def modify(self, id, version, name, restart_required, data_type,
+               max_size, min_size):
+        body = {
+            "configuration-parameter": {
+                "name": name,
+                "restart_required": restart_required,
+                "data_type": data_type,
+                "max_size": max_size,
+                "min_size": min_size,
+            }
+        }
+        output = {
+            'version': version,
+            'parameter_id': id
+        }
+        url = ("/mgmt/datastores/versions/%(version)s/"
+               "parameters/%(parameter_id)s" % output)
+        resp, body = self.api.client.put(url, body=body)
+        common.check_for_exceptions(resp, body, url)
+
+    def delete(self, id, version):
+        output = {
+            'version': version,
+            'parameter_id': id
+        }
+        url = ("/mgmt/datastores/versions/%(version)s/"
+               "parameters/%(parameter_id)s" % output)
+        resp, body = self.api.client.delete(url)
+        common.check_for_exceptions(resp, body, url)
+
     # Appease the abc gods
     def list(self):
         pass
