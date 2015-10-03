@@ -483,6 +483,9 @@ def do_create(cs, args):
 @utils.arg('datastore_version',
            metavar='<datastore_version>',
            help='A datastore version name or UUID.')
+@utils.arg('--backup',
+           metavar='<backup>',
+           help='A backup UUID to build instance with.')
 @utils.arg('--instance',
            metavar="<flavor=flavor_name_or_id,volume=volume>",
            action='append',
@@ -513,10 +516,16 @@ def do_cluster_create(cs, args):
     if len(instances) == 0:
         raise exceptions.MissingArgs(['instance'])
 
+    if args.backup:
+        restore_point = {"backupRef": args.backup}
+    else:
+        restore_point = None
+
     cluster = cs.clusters.create(args.name,
                                  args.datastore,
                                  args.datastore_version,
-                                 instances=instances)
+                                 instances=instances,
+                                 restore_point=restore_point)
     cluster._info['task_name'] = cluster.task['name']
     cluster._info['task_description'] = cluster.task['description']
     del cluster._info['task']
